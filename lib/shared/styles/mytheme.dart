@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:todo_app/shared/styles/app_colors.dart';
 import 'package:todo_app/shared/styles/text_style.dart';
 
@@ -14,16 +13,13 @@ class MyThemeData {
       ),
       primaryColor: lightColor,
       textTheme: TextTheme(
-          bodyLarge: Popins22(),
-          bodyMedium: Popins18(),
-          bodySmall: Robot12()
-      ),
+          bodyLarge: Popins22(), bodyMedium: Popins18(), bodySmall: Robot12()),
       appBarTheme: AppBarTheme(
           iconTheme: IconThemeData(
             color: Colors.white,
             size: 30,
           ),
-          backgroundColor: Colors.transparent,
+          backgroundColor: lightColor,
           elevation: 0.0,
           centerTitle: false));
   static ThemeData darkTheme = ThemeData(
