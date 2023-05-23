@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/models/tasks_model.dart';
+import 'package:todo_app/shared/network/firebase/firebase_function.dart';
 import 'package:todo_app/shared/styles/app_colors.dart';
 
 class AddTaskBottomSheet extends StatefulWidget {
@@ -8,7 +10,10 @@ class AddTaskBottomSheet extends StatefulWidget {
 
 class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
   var formkey = GlobalKey<FormState>();
-  String selected = DateTime.now().toString().substring(0, 10);
+  var selected = DateUtils.dateOnly(DateTime.now());
+
+  var titleController = TextEditingController();
+  var descriptionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +35,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
               height: 15,
             ),
             TextFormField(
+              controller: titleController,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return "please enter Task title";
@@ -59,6 +65,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
               height: 15,
             ),
             TextFormField(
+              controller: descriptionController,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return "please enter Task Description";
@@ -104,7 +111,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                 chosseDate();
               },
               child: Text(
-                selected,
+                selected.toString().substring(0, 10),
                 style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                       color: lightColor,
                     ),
@@ -116,7 +123,14 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
             ElevatedButton(
               onPressed: () {
                 if (formkey.currentState!.validate()) {
-                  print("Route sunday");
+                  TaskModel task = TaskModel(
+                      title: titleController.text,
+                      description: descriptionController.text,
+                      date: selected.millisecondsSinceEpoch,
+                      status: false);
+                  FirebaseFunction.addTaskFirestore(task).then((value) {
+                    Navigator.pop(context);
+                  });
                 }
               },
               child: Text("add task"),
@@ -135,7 +149,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
       lastDate: DateTime.now().add(Duration(days: 365)),
     );
     if (selectedDate != null) {
-      selected = selectedDate.toString().substring(0, 10);
+      selected = DateUtils.dateOnly(selectedDate);
       setState(() {});
     }
   }
